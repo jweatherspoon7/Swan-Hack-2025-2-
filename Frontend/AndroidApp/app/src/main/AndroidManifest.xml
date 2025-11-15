@@ -10,6 +10,26 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SwanHack25" />
+        android:theme="@style/Theme.SwanHack25">
+
+
+        <activity android:name=".SignUpActivity"
+            android:exported="true" />
+        <activity android:name=".LoginActivity"
+            android:exported="true" />
+
+
+
+
+    </application>
+
+
+
+
+
+
+
+
+
 
 </manifest>
