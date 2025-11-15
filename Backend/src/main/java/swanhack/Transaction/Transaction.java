@@ -12,31 +12,47 @@ public class Transaction {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user2_id", nullable = false)
     @JsonBackReference //helps stop infinite recursion when
-    private User2 user;
+    private User2 user2;
 
     private String transactionName;
 
     private double total;
 
-    private double amountDonanted;
+    private double amountDonated;
+
+    //DATE
+    private int month;
+    private int day;
+    private int year;
 
     public Transaction(){}
 
-    public Transaction(User2 user, String transactionName, double total, double amountDonanted) {
-        this.user = user;
+    public Transaction(User2 user2, String transactionName, double total, double amountDonated, int month, int day, int year) {
+        this.user2 = user2;
         this.transactionName = transactionName;
         this.total = total;
-        this.amountDonanted = amountDonanted;
+        this.amountDonated = amountDonated;
+        this.month = month;
+        this.day = day;
+        this.year = year;
     }
 
-    public User2 getUser() {
-        return user;
+    public long getId() {
+        return id;
     }
 
-    public void setUser(User2 user) {
-        this.user = user;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public User2 getUser2() {
+        return user2;
+    }
+
+    public void setUser2(User2 user) {
+        this.user2 = user;
     }
 
     public String getTransactionName() {
@@ -55,11 +71,35 @@ public class Transaction {
         this.total = total;
     }
 
-    public double getAmountDonanted() {
-        return amountDonanted;
+    public double getAmountDonated() {
+        return amountDonated;
     }
 
-    public void setAmountDonanted(double amountDonanted) {
-        this.amountDonanted = amountDonanted;
+    public void setAmountDonated(double amountDonated) {
+        this.amountDonated = amountDonated;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 }

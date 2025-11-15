@@ -1,4 +1,7 @@
+swanhack\Transaction\TransactionController.class
 swanhack\Main.class
 swanhack\User2\User2Controller.class
+swanhack\Transaction\TransactionRepository.class
 swanhack\User2\User2Repository.class
+swanhack\Transaction\Transaction.class
 swanhack\User2\User2.class
