@@ -102,4 +102,14 @@ public class Transaction {
     public void setYear(int year) {
         this.year = year;
     }
+
+    @Override
+    public String toString() {
+        return "year=" + year +
+                ",day=" + day +
+                ",month=" + month +
+                ",amountDonated=" + amountDonated +
+                ",total=" + total +
+                ",transactionName=" + transactionName;
+    }
 }

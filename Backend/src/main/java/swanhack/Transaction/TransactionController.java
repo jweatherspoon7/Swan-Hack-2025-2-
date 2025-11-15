@@ -25,6 +25,9 @@ public class TransactionController {
     @Autowired
     User2Repository user2Repository;
 
+    @Autowired
+    private TransactionSocket transactionSocket;
+
     @GetMapping("/transaction")
     public List<Transaction> getTransactions() {
         return transactionRepository.findAll();
@@ -62,7 +65,7 @@ public class TransactionController {
     */
     @PostMapping("/transaction")
     public String createTransaction(@RequestBody Map<String, Object> newTransaction){
-        long userId = (long) newTransaction.get("userId");
+        int userId = (int) newTransaction.get("userId");
         User2 user = user2Repository.findById(userId);
 
         if(user == null){
@@ -74,6 +77,8 @@ public class TransactionController {
                 (int) newTransaction.get("month"), (int) newTransaction.get("day"), (int) newTransaction.get("year"));
 
         transactionRepository.save(transaction);
+
+        transactionSocket.sendTransaction(transaction);
 
         return "New transaction created";
     }
@@ -96,6 +101,8 @@ public class TransactionController {
         transaction.setYear((int) newTransaction.get("year"));
 
         transactionRepository.save(transaction);
+
+        transactionSocket.sendTransaction(transaction);
 
         return "Update sucessful";
     }
