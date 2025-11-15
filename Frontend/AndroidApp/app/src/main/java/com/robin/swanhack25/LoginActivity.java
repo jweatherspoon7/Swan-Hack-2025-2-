@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void goToProfile() {
-        Intent intent = new Intent(LoginActivity.this, Home.class);
+        Intent intent = new Intent(LoginActivity.this, BankConnection.class);
         startActivity(intent);
         finish();
     }
