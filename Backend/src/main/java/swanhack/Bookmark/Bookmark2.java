@@ -18,7 +18,7 @@ public class Bookmark2 {
     //location stuff
     private String charityName;
 
-    private String precentContribution;
+    private int precentContribution;
 
     private String totalContribution;
 
@@ -54,11 +54,11 @@ public class Bookmark2 {
         this.charityName = charityName;
     }
 
-    public String getPrecentContribution() {
+    public int getPrecentContribution() {
         return precentContribution;
     }
 
-    public void setPrecentContribution(String precentContribution) {
+    public void setPrecentContribution(int precentContribution) {
         this.precentContribution = precentContribution;
     }
 

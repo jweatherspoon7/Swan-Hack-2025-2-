@@ -85,7 +85,7 @@ public class TransactionController {
 
         for(Bookmark2 bk: bookmark2s){
             double total = Double.parseDouble(bk.getTotalContribution());
-            double percent = ( Double.parseDouble(bk.getPrecentContribution()) ) /100;
+            double percent = ( (double) bk.getPrecentContribution() ) /100;
 
             total += amount * percent;
 
