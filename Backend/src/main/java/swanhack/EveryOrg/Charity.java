@@ -9,17 +9,19 @@ public class Charity {
 
     // extra detail fields
     private String website;
-    private String donationUrl;
-    private String city;
-    private String state;
+    private String everyOrgUrl;
+    private String location;
 
     public Charity() {}
 
-    public Charity(String ein, String name, String description, String logoUrl) {
+    public Charity(String ein, String name, String description, String logoUrl, String location, String website, String everyOrgUrl) {
         this.ein = ein;
         this.name = name;
         this.description = description;
         this.logoUrl = logoUrl;
+        this.location = location;
+        this.website = website;
+        this.everyOrgUrl = everyOrgUrl;
     }
 
     public String getEin() { return ein; }
@@ -37,12 +39,19 @@ public class Charity {
     public String getWebsite() { return website; }
     public void setWebsite(String website) { this.website = website; }
 
-    public String getDonationUrl() { return donationUrl; }
-    public void setDonationUrl(String donationUrl) { this.donationUrl = donationUrl; }
+    public String getLocation() {
+        return location;
+    }
 
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
-    public String getState() { return state; }
-    public void setState(String state) { this.state = state; }
+    public String getEveryOrgUrl() {
+        return everyOrgUrl;
+    }
+
+    public void setEveryOrgUrl(String everyOrgUrl) {
+        this.everyOrgUrl = everyOrgUrl;
+    }
 }
