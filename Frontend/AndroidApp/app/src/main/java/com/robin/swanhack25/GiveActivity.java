@@ -16,12 +16,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
@@ -31,24 +34,29 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class GiveActivity extends AppCompatActivity {
 
-    private RecyclerView bookmarksRecyclerView;
+    private PieChart pieChart;
+    private android.widget.LinearLayout slicesContainer;
     private TextView totalPercentText;
     private Button saveButton;
 
     private final List<Bookmark> bookmarks = new ArrayList<>();
-    private BookmarksAdapter adapter;
+
+    private final List<Float> values = new ArrayList<>();
+    private final List<TextView> labels = new ArrayList<>();
+    private final List<SeekBar> seekBars = new ArrayList<>();
+    private boolean isUpdating = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_give);
 
-        bookmarksRecyclerView = findViewById(R.id.give_recycler_view);
+        pieChart = findViewById(R.id.give_pie_chart);
+        slicesContainer = findViewById(R.id.give_slices_container);
         totalPercentText = findViewById(R.id.give_total_percent_text);
         saveButton = findViewById(R.id.give_save_button);
 
@@ -56,10 +64,6 @@ public class GiveActivity extends AppCompatActivity {
         if (profileButton != null) {
             profileButton.setOnClickListener(v -> showProfileOptions());
         }
-
-        adapter = new BookmarksAdapter(bookmarks);
-        bookmarksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        bookmarksRecyclerView.setAdapter(adapter);
 
         setupBottomNav();
 
@@ -140,7 +144,8 @@ public class GiveActivity extends AppCompatActivity {
                         Log.e("GiveActivity", "Parsing bookmarks failed", e);
                         Toast.makeText(GiveActivity.this, "Failed to load bookmarks", Toast.LENGTH_SHORT).show();
                     }
-                    adapter.notifyDataSetChanged();
+                    initializeSlices();
+                    updateChart();
                     updateTotalPercent();
                 },
                 error -> {
@@ -189,15 +194,144 @@ public class GiveActivity extends AppCompatActivity {
         Toast.makeText(this, "Saving changes...", Toast.LENGTH_SHORT).show();
     }
 
+    private void initializeSlices() {
+        values.clear();
+        labels.clear();
+        seekBars.clear();
+        if (slicesContainer != null) {
+            slicesContainer.removeAllViews();
+        }
+
+        if (bookmarks.isEmpty() || slicesContainer == null) {
+            return;
+        }
+
+        float total = 0f;
+        for (Bookmark bookmark : bookmarks) {
+            total += bookmark.currentPercent;
+        }
+
+        if (total <= 0f) {
+            float defaultValue = 100f / bookmarks.size();
+            for (Bookmark bookmark : bookmarks) {
+                bookmark.currentPercent = Math.round(defaultValue);
+                values.add(defaultValue);
+            }
+        } else {
+            for (Bookmark bookmark : bookmarks) {
+                float v = (bookmark.currentPercent / total) * 100f;
+                values.add(v);
+            }
+        }
+
+        for (int i = 0; i < bookmarks.size(); i++) {
+            Bookmark bookmark = bookmarks.get(i);
+            float value = values.get(i);
+
+            TextView tv = new TextView(this);
+            tv.setText(bookmark.charityName + ": " + String.format("%.1f", value) + "%");
+            tv.setTextSize(16);
+            slicesContainer.addView(tv);
+            labels.add(tv);
+
+            SeekBar sb = new SeekBar(this);
+            sb.setMax(100);
+            sb.setProgress(Math.round(value));
+            slicesContainer.addView(sb);
+            seekBars.add(sb);
+
+            final int index = i;
+            sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    if (!fromUser || isUpdating) {
+                        return;
+                    }
+                    adjustSlices(index, (float) progress);
+                    updateChart();
+                    updateTotalPercent();
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) { }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) { }
+            });
+        }
+    }
+
+    private void adjustSlices(int changedIndex, float newValue) {
+        isUpdating = true;
+
+        values.set(changedIndex, newValue);
+
+        float remainingTotal = 100f - newValue;
+
+        float otherSum = 0f;
+        for (int i = 0; i < values.size(); i++) {
+            if (i != changedIndex) {
+                otherSum += values.get(i);
+            }
+        }
+
+        for (int i = 0; i < values.size(); i++) {
+            if (i == changedIndex) {
+                continue;
+            }
+
+            if (otherSum == 0f) {
+                values.set(i, remainingTotal / (values.size() - 1));
+            } else {
+                float scaled = (values.get(i) / otherSum) * remainingTotal;
+                values.set(i, scaled);
+            }
+        }
+
+        for (int i = 0; i < seekBars.size(); i++) {
+            seekBars.get(i).setProgress(Math.round(values.get(i)));
+        }
+
+        for (int i = 0; i < bookmarks.size(); i++) {
+            bookmarks.get(i).currentPercent = Math.round(values.get(i));
+        }
+
+        isUpdating = false;
+    }
+
+    private void updateChart() {
+        if (pieChart == null || bookmarks.isEmpty()) {
+            return;
+        }
+
+        ArrayList<PieEntry> entries = new ArrayList<>();
+
+        for (int i = 0; i < values.size(); i++) {
+            float v = values.get(i);
+            Bookmark bookmark = bookmarks.get(i);
+            entries.add(new PieEntry(v, bookmark.charityName));
+            if (i < labels.size()) {
+                labels.get(i).setText(bookmark.charityName + ": " + String.format("%.1f", v) + "%");
+            }
+        }
+
+        PieDataSet dataSet = new PieDataSet(entries, "");
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+
+        PieData data = new PieData(dataSet);
+        pieChart.setData(data);
+        pieChart.invalidate();
+    }
+
     private void sendUpdate(Bookmark bookmark) {
         String url = Utils.BASE_URL + "/bookmark/" + bookmark.id;
 
         JSONObject body = new JSONObject();
         try {
             body.put("precentContribution", bookmark.currentPercent);
-            double contribution = bookmark.totalContribution;
-            String formattedContribution = String.format(Locale.US, "%.1f", contribution);
-            body.put("totalContribution", formattedContribution);
+            String contribution = String.format("%.1f", bookmark.totalContribution);
+            
+            body.put("totalContribution", contribution);
             body.put("charityName", bookmark.charityName);
             Log.d("put request", "body: " + body.toString());
 
@@ -246,68 +380,6 @@ public class GiveActivity extends AppCompatActivity {
             this.originalPercent = percent;
             this.currentPercent = percent;
             this.totalContribution = totalContribution;
-        }
-    }
-
-    private class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.BookmarkViewHolder> {
-
-        private final List<Bookmark> localBookmarks;
-
-        BookmarksAdapter(List<Bookmark> bookmarks) {
-            this.localBookmarks = bookmarks;
-        }
-
-        @NonNull
-        @Override
-        public BookmarkViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = getLayoutInflater().inflate(R.layout.item_bookmark, parent, false);
-            return new BookmarkViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull BookmarkViewHolder holder, int position) {
-            Bookmark bookmark = localBookmarks.get(position);
-            holder.nameText.setText(bookmark.charityName);
-            holder.totalContributionText.setText("Total contributed: $" + String.format("%.2f", bookmark.totalContribution));
-
-            holder.percentText.setText(bookmark.currentPercent + "%");
-            holder.seekBar.setOnSeekBarChangeListener(null);
-            holder.seekBar.setProgress(bookmark.currentPercent);
-
-            holder.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    bookmark.currentPercent = progress;
-                    holder.percentText.setText(progress + "%");
-                    updateTotalPercent();
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) { }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) { }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return localBookmarks.size();
-        }
-
-        class BookmarkViewHolder extends RecyclerView.ViewHolder {
-            final TextView nameText;
-            final TextView totalContributionText;
-            final TextView percentText;
-            final SeekBar seekBar;
-
-            BookmarkViewHolder(@NonNull View itemView) {
-                super(itemView);
-                nameText = itemView.findViewById(R.id.bookmark_charity_name);
-                totalContributionText = itemView.findViewById(R.id.bookmark_total_contribution);
-                percentText = itemView.findViewById(R.id.bookmark_percent_text);
-                seekBar = itemView.findViewById(R.id.bookmark_percent_seekbar);
-            }
         }
     }
 }

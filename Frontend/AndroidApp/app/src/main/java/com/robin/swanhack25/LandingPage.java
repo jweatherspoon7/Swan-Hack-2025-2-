@@ -9,18 +9,24 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class LandingPage extends AppCompatActivity {
 
-    private Button button;
+    private Button signup, login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
 
-        button = (Button) findViewById(R.id.button2);
+        signup = (Button) findViewById(R.id.button2);
+        login = findViewById(R.id.button3);
 
-        button.setOnClickListener(v -> openSignUpActivity());
+        signup.setOnClickListener(v -> openSignUpActivity());
+        login.setOnClickListener(v -> openLoginActivity());
 
 
+    }
+
+    private void openLoginActivity() {
+        startActivity(new Intent(LandingPage.this, LoginActivity.class));
     }
 
     private void openSignUpActivity() {
