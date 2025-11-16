@@ -35,7 +35,7 @@ public class BankSearchActivity extends AppCompatActivity {
         List<Bank> banks = createMockBanks();
 
         bankAdapter = new BankAdapter(banks, bank -> {
-            Intent intent = new Intent(BankSearchActivity.this, Home.class);
+            Intent intent = new Intent(BankSearchActivity.this, SelectCharitiesActivity.class);
             startActivity(intent);
             finish();
         });

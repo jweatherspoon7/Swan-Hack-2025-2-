@@ -1,16 +1,21 @@
 package com.robin.swanhack25;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,12 +46,64 @@ public class Home extends AppCompatActivity {
             welcomeText.setText("Welcome, " + username);
         }
 
+        ImageButton profileButton = findViewById(R.id.home_profile_button);
+        if (profileButton != null) {
+            profileButton.setOnClickListener(v -> showProfileOptions());
+        }
+
         transactionsRecyclerView = findViewById(R.id.home_recycler_view);
         transactionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         transactionsAdapter = new TransactionsAdapter();
         transactionsRecyclerView.setAdapter(transactionsAdapter);
 
+        setupBottomNav();
+
         fetchTransactions();
+    }
+
+    private void showProfileOptions() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        CharSequence[] options = {"Edit profile", "Log out"};
+        builder.setItems(options, (DialogInterface dialog, int which) -> {
+            if (which == 0) {
+                Intent intent = new Intent(Home.this, EditProfileActivity.class);
+                startActivity(intent);
+            } else if (which == 1) {
+                SessionManager.clear();
+                Intent intent = new Intent(Home.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+        });
+        builder.show();
+    }
+
+    private void setupBottomNav() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.home_bottom_nav);
+        if (bottomNavigationView == null) {
+            return;
+        }
+
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                return true;
+            } else if (id == R.id.nav_stats) {
+                Intent intent = new Intent(Home.this, StatsActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (id == R.id.nav_give) {
+                Intent intent = new Intent(Home.this, GiveActivity.class);
+                startActivity(intent);
+                return true;
+            } else if (id == R.id.nav_charity) {
+                Toast.makeText(Home.this, "Coming soon", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            return false;
+        });
     }
 
     private void fetchTransactions() {
