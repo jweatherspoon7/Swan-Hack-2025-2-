@@ -69,17 +69,49 @@
             android:text="Last year" />
     </RadioGroup>
 
-    <LinearLayout
-        android:id="@+id/stats_chart_container"
+    <ScrollView
+        android:id="@+id/stats_scroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:gravity="bottom"
-        android:paddingTop="16dp"
+        android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/stats_range_group"
         app:layout_constraintBottom_toTopOf="@id/stats_bottom_nav"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/stats_content_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="16dp">
+
+            <LinearLayout
+                android:id="@+id/stats_chart_container"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:orientation="horizontal"
+                android:gravity="bottom" />
+
+            <TextView
+                android:id="@+id/stats_charity_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Per-charity totals"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp" />
+
+            <LinearLayout
+                android:id="@+id/stats_charity_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="4dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/stats_bottom_nav"

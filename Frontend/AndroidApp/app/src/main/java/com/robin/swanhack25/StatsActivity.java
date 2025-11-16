@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -37,6 +38,7 @@ public class StatsActivity extends AppCompatActivity {
 
     private TextView totalDonatedText;
     private LinearLayout chartContainer;
+    private LinearLayout charityContainer;
     private RadioGroup rangeGroup;
 
     private final List<Transaction> allTransactions = new ArrayList<>();
@@ -55,6 +57,7 @@ public class StatsActivity extends AppCompatActivity {
 
         totalDonatedText = findViewById(R.id.stats_total_donated_text);
         chartContainer = findViewById(R.id.stats_chart_container);
+        charityContainer = findViewById(R.id.stats_charity_container);
         rangeGroup = findViewById(R.id.stats_range_group);
 
         ImageButton profileButton = findViewById(R.id.stats_profile_button);
@@ -66,6 +69,7 @@ public class StatsActivity extends AppCompatActivity {
         setupRangeSelector();
 
         fetchTransactions();
+        fetchCharityStats();
     }
 
     private void showProfileOptions() {
@@ -362,6 +366,64 @@ public class StatsActivity extends AppCompatActivity {
         }
 
         chartContainer.addView(barsContainer);
+    }
+
+    private void fetchCharityStats() {
+        if (charityContainer == null) {
+            return;
+        }
+
+        int userId = SessionManager.getKeyUserId();
+        String url = Utils.BASE_URL + "/bookmark/user/" + userId;
+
+        JsonArrayRequest request = new JsonArrayRequest(
+                Request.Method.GET,
+                url,
+                null,
+                response -> {
+                    charityContainer.removeAllViews();
+                    try {
+                        NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.getDefault());
+                        for (int i = 0; i < response.length(); i++) {
+                            JSONObject obj = response.getJSONObject(i);
+                            String name = obj.optString("charityName");
+                            double total = obj.optDouble("totalContribution", 0.0);
+
+                            if (total <= 0.0) {
+                                continue;
+                            }
+
+                            TextView tv = new TextView(this);
+                            StringBuilder sb = new StringBuilder();
+                            sb.append(name);
+                            sb.append(" - ");
+                            sb.append(currency.format(total));
+                            tv.setText(sb.toString());
+                            tv.setTextSize(14);
+                            tv.setPadding(0, (int) (4 * getResources().getDisplayMetrics().density), 0, 0);
+
+                            charityContainer.addView(tv);
+                        }
+
+                        if (charityContainer.getChildCount() == 0) {
+                            TextView tv = new TextView(this);
+                            tv.setText("No per-charity contributions yet.");
+                            tv.setTextSize(14);
+                            charityContainer.addView(tv);
+                        }
+                    } catch (JSONException e) {
+                        Log.e("StatsActivity", "Parsing bookmarks failed", e);
+                        Toast.makeText(StatsActivity.this, "Failed to load charity stats", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                error -> {
+                    String message = "Failed to load charity stats";
+                    Log.e("StatsActivity", message, error);
+                    Toast.makeText(StatsActivity.this, message, Toast.LENGTH_SHORT).show();
+                }
+        );
+
+        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
     }
 
     private static class Transaction {
