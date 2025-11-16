@@ -99,7 +99,8 @@ public class Home extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             } else if (id == R.id.nav_charity) {
-                Toast.makeText(Home.this, "Coming soon", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Home.this, CharityActivity.class);
+                startActivity(intent);
                 return true;
             }
             return false;

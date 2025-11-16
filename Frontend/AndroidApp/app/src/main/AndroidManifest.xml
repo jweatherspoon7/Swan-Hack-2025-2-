@@ -35,6 +35,8 @@
             android:exported="false"/>
         <activity android:name=".GiveActivity"
             android:exported="false"/>
+        <activity android:name=".CharityActivity"
+            android:exported="true"/>
         <activity android:name=".StatsActivity"
             android:exported="true"/>
         <activity android:name=".BankSearchActivity"

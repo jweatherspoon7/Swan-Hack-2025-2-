@@ -44,7 +44,10 @@ public class BankConnection extends AppCompatActivity {
         autoConnect = findViewById(R.id.autoConnect);
         manualConnect = findViewById(R.id.manualConnect);
 
-        autoConnect.setOnClickListener(v -> startPlaidLinkFlow());
+        autoConnect.setOnClickListener(v -> {
+            Intent intent = new Intent(BankConnection.this, BankSearchActivity.class);
+            startActivity(intent);
+        });
 
         manualConnect.setOnClickListener(v -> {
             Intent intent = new Intent(BankConnection.this, ManualConnection.class);

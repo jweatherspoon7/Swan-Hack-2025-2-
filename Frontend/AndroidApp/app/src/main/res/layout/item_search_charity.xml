@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp">
+
+    <ImageView
+        android:id="@+id/search_charity_image"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/search_charity_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Charity Name"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginStart="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/search_charity_image"
+        app:layout_constraintEnd_toStartOf="@id/search_charity_add_button" />
+
+    <TextView
+        android:id="@+id/search_charity_website"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="website.org"
+        android:textSize="12sp"
+        android:textColor="#777777"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginTop="2dp"
+        app:layout_constraintTop_toBottomOf="@id/search_charity_name"
+        app:layout_constraintStart_toStartOf="@id/search_charity_name"
+        app:layout_constraintEnd_toStartOf="@id/search_charity_add_button" />
+
+    <TextView
+        android:id="@+id/search_charity_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Short description..."
+        android:textSize="12sp"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/search_charity_website"
+        app:layout_constraintStart_toStartOf="@id/search_charity_name"
+        app:layout_constraintEnd_toStartOf="@id/search_charity_add_button"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <Button
+        android:id="@+id/search_charity_add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

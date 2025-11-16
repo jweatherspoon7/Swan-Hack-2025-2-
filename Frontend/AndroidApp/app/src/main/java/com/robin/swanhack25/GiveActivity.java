@@ -1,16 +1,20 @@
 package com.robin.swanhack25;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +31,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class GiveActivity extends AppCompatActivity {
@@ -47,6 +52,11 @@ public class GiveActivity extends AppCompatActivity {
         totalPercentText = findViewById(R.id.give_total_percent_text);
         saveButton = findViewById(R.id.give_save_button);
 
+        ImageButton profileButton = findViewById(R.id.give_profile_button);
+        if (profileButton != null) {
+            profileButton.setOnClickListener(v -> showProfileOptions());
+        }
+
         adapter = new BookmarksAdapter(bookmarks);
         bookmarksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         bookmarksRecyclerView.setAdapter(adapter);
@@ -56,6 +66,24 @@ public class GiveActivity extends AppCompatActivity {
         saveButton.setOnClickListener(v -> saveChanges());
 
         loadBookmarks();
+    }
+
+    private void showProfileOptions() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        CharSequence[] options = {"Edit profile", "Log out"};
+        builder.setItems(options, (DialogInterface dialog, int which) -> {
+            if (which == 0) {
+                Intent intent = new Intent(GiveActivity.this, EditProfileActivity.class);
+                startActivity(intent);
+            } else if (which == 1) {
+                SessionManager.clear();
+                Intent intent = new Intent(GiveActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+        });
+        builder.show();
     }
 
     private void setupBottomNav() {
@@ -76,7 +104,7 @@ public class GiveActivity extends AppCompatActivity {
             } else if (id == R.id.nav_give) {
                 return true;
             } else if (id == R.id.nav_charity) {
-                Toast.makeText(GiveActivity.this, "Coming soon", Toast.LENGTH_SHORT).show();
+                startActivity(new android.content.Intent(GiveActivity.this, CharityActivity.class));
                 return true;
             }
             return false;
@@ -167,8 +195,12 @@ public class GiveActivity extends AppCompatActivity {
         JSONObject body = new JSONObject();
         try {
             body.put("precentContribution", bookmark.currentPercent);
-            body.put("totalContribution", bookmark.totalContribution);
-            body.put("charityId", bookmark.charityName);
+            double contribution = bookmark.totalContribution;
+            String formattedContribution = String.format(Locale.US, "%.1f", contribution);
+            body.put("totalContribution", formattedContribution);
+            body.put("charityName", bookmark.charityName);
+            Log.d("put request", "body: " + body.toString());
+
         } catch (JSONException e) {
             Toast.makeText(this, "Failed to build update", Toast.LENGTH_SHORT).show();
             return;
@@ -279,4 +311,3 @@ public class GiveActivity extends AppCompatActivity {
         }
     }
 }
-

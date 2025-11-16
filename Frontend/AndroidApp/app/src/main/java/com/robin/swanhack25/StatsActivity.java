@@ -106,7 +106,8 @@ public class StatsActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             } else if (id == R.id.nav_charity) {
-                Toast.makeText(StatsActivity.this, "Coming soon", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(StatsActivity.this, CharityActivity.class);
+                startActivity(intent);
                 return true;
             }
             return false;
@@ -276,6 +277,47 @@ public class StatsActivity extends AppCompatActivity {
 
         chartContainer.setOrientation(LinearLayout.HORIZONTAL);
 
+        // Left labels column for donation amounts
+        LinearLayout labelsColumn = new LinearLayout(this);
+        labelsColumn.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams labelsParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        );
+        labelsColumn.setLayoutParams(labelsParams);
+        labelsColumn.setPadding(0, 0, (int) (8 * density), 0);
+
+        NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.getDefault());
+
+        int steps = 4;
+        for (int i = steps; i >= 0; i--) {
+            double value = (maxAmount * i) / steps;
+            TextView label = new TextView(this);
+            label.setText(currency.format(value));
+            label.setTextSize(10);
+            label.setGravity(android.view.Gravity.START);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    0,
+                    1
+            );
+            label.setLayoutParams(lp);
+            labelsColumn.addView(label);
+        }
+
+        chartContainer.addView(labelsColumn);
+
+        // Bars area
+        LinearLayout barsContainer = new LinearLayout(this);
+        barsContainer.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams barsParams = new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                1
+        );
+        barsContainer.setLayoutParams(barsParams);
+        barsContainer.setGravity(android.view.Gravity.BOTTOM);
+
         DateFormatSymbols dfs = new DateFormatSymbols();
         String[] shortMonths = dfs.getShortMonths();
 
@@ -316,8 +358,10 @@ public class StatsActivity extends AppCompatActivity {
             column.addView(bar);
             column.addView(label);
 
-            chartContainer.addView(column);
+            barsContainer.addView(column);
         }
+
+        chartContainer.addView(barsContainer);
     }
 
     private static class Transaction {
