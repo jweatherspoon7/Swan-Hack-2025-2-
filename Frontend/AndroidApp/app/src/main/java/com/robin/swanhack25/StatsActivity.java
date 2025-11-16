@@ -99,7 +99,9 @@ public class StatsActivity extends AppCompatActivity {
                 Intent intent = new Intent(StatsActivity.this, Home.class);
                 startActivity(intent);
                 return true;
-            } else if (id == R.id.nav_stats) {
+            } else if (id == R.id.nav_stats) { //use for replacement for pie chart
+                Intent intent = new Intent(StatsActivity.this, PieChartActivity.class);
+                startActivity(intent);
                 return true;
             } else if (id == R.id.nav_give) {
                 Intent intent = new Intent(StatsActivity.this, GiveActivity.class);

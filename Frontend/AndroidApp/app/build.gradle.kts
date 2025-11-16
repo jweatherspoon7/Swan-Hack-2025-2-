@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.volley)
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("com.plaid.link:sdk-core:5.5.0")
     implementation("com.squareup.picasso:picasso:2.8")
     testImplementation(libs.junit)
