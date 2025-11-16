@@ -20,6 +20,11 @@ public class SessionManager {
         KEY_USERNAME = keyUsername;
     }
 
+    public static void clear() {
+        KEY_USER_ID = 0;
+        KEY_USERNAME = null;
+    }
+
     private static int KEY_USER_ID;
     private static String KEY_USERNAME;
 

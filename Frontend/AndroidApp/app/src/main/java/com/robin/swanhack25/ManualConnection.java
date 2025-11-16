@@ -18,7 +18,7 @@ public class ManualConnection extends AppCompatActivity {
         connect = findViewById(R.id.connect);
 
         connect.setOnClickListener(v -> {
-            Intent intent = new Intent(ManualConnection.this, Home.class);
+            Intent intent = new Intent(ManualConnection.this, SelectCharitiesActivity.class);
             startActivity(intent);
         });
     }

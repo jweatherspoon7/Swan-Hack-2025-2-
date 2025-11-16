@@ -29,6 +29,14 @@
             android:exported="true"/>
         <activity android:name=".Home"
             android:exported="true"/>
+        <activity android:name=".SelectCharitiesActivity"
+            android:exported="true"/>
+        <activity android:name=".EditProfileActivity"
+            android:exported="false"/>
+        <activity android:name=".GiveActivity"
+            android:exported="false"/>
+        <activity android:name=".StatsActivity"
+            android:exported="true"/>
         <activity android:name=".BankSearchActivity"
             android:exported="false"/>
 
