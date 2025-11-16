@@ -20,7 +20,7 @@ public class Bookmark2 {
 
     private int precentContribution;
 
-    private double totalContribution;
+    private String totalContribution;
 
     public Bookmark2(){}
 
@@ -62,11 +62,11 @@ public class Bookmark2 {
         this.precentContribution = precentContribution;
     }
 
-    public double getTotalContribution() {
+    public String getTotalContribution() {
         return totalContribution;
     }
 
-    public void setTotalContribution(double totalContribution) {
+    public void setTotalContribution(String totalContribution) {
         this.totalContribution = totalContribution;
     }
 }
