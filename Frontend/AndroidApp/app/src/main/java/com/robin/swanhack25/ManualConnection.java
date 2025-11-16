@@ -15,7 +15,7 @@ public class ManualConnection extends AppCompatActivity {
         super.onCreate(SavedInstanceState);
         setContentView(R.layout.activity_manualbank);
 
-        connect.findViewById(R.id.connect);
+        connect = findViewById(R.id.connect);
 
         connect.setOnClickListener(v -> {
             Intent intent = new Intent(ManualConnection.this, Home.class);

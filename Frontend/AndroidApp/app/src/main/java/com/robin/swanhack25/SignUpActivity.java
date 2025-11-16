@@ -74,24 +74,20 @@ public class SignUpActivity extends AppCompatActivity {
 
         JSONObject requestBody = new JSONObject();
         try {
-            requestBody.put("username", usernameInput);
+            requestBody.put("email", usernameInput);
             requestBody.put("password", passwordInput);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+        StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
                 URL_STRING_REQ,
-                requestBody,
-                new Response.Listener<JSONObject>() {
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("Volley Response", response.toString());
-                        Toast.makeText(SignUpActivity.this, response.toString(), Toast.LENGTH_LONG).show();
-
-                        fetchUserIdAndCreateProfile(usernameInput);
-
+                    public void onResponse(String response) {
+                        Log.d("Volley Response", response);
+                        Toast.makeText(SignUpActivity.this, response, Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -108,53 +104,20 @@ public class SignUpActivity extends AppCompatActivity {
                 headers.put("Content-Type", "application/json");
                 return headers;
             }
+
+            @Override
+            public byte[] getBody() {
+                return requestBody.toString().getBytes();
+            }
         };
 
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
+        VolleySingleton.getInstance(getApplicationContext())
+                .addToRequestQueue(stringRequest);
     }
 
-    private void createProfileForNewUser(int userId) {
-        JSONObject profileJson = new JSONObject();
-        try {
-            profileJson.put("userId", userId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return;
-        }
 
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.POST,
-                Utils.BASE_URL + "/profiles",
-                profileJson,
-                response -> Log.d("ProfileCreate", "Profile created successfully"),
-                error -> Log.e("ProfileCreate", "Failed to create profile: " + error)
-        );
 
-        VolleySingleton.getInstance(this).addToRequestQueue(request);
-    }
 
-    private void fetchUserIdAndCreateProfile(String username) {
-        String url = Utils.BASE_URL + "/users/username/" + username;
 
-        JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.GET,
-                url,
-                null,
-                response -> {
-                    try {
-                        int newUserId = response.getInt("id");
-                        createProfileForNewUser(newUserId);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(SignUpActivity.this, "Failed to get new user ID", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> {
-                    Log.e("Fetch User ID Error", error.toString());
-                }
-        );
-
-        VolleySingleton.getInstance(getApplicationContext()).addToRequestQueue(request);
-    }
 
 }

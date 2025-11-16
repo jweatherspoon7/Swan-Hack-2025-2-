@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/transaction_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Merchant"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/transaction_amounts"
+        android:ellipsize="end"
+        android:maxLines="1" />
+
+    <TextView
+        android:id="@+id/transaction_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Nov 15, 2025"
+        android:textSize="12sp"
+        android:textColor="#777777"
+        app:layout_constraintTop_toBottomOf="@id/transaction_name"
+        app:layout_constraintStart_toStartOf="@id/transaction_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/transaction_amounts" />
+
+    <TextView
+        android:id="@+id/transaction_amounts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+$0.50  $12.50"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

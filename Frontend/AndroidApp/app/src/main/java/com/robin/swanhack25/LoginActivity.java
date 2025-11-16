@@ -63,8 +63,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginRequest(String usernameOrEmailInput, String passwordInput) {
-        String url = usernameOrEmailInput.contains("@") ? EMAIL_URL + usernameOrEmailInput
-                : USERNAME_URL + usernameOrEmailInput;
+        String url = EMAIL_URL + usernameOrEmailInput;
+
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET,
@@ -80,12 +80,9 @@ public class LoginActivity extends AppCompatActivity {
 
                             loggedInUserId = userId;
                             SessionManager.setKeyUserId(userId);
-                            SessionManager.setKeyUsername(response.getString("username"));
+                            SessionManager.setKeyUsername(response.getString("email"));
 
-                            getSharedPreferences("AppPrefs", MODE_PRIVATE)
-                                    .edit()
-                                    .putInt("USER_ID", userId)
-                                    .apply();
+
                             goToProfile();
 
                         } else {

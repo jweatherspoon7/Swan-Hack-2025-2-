@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:title="Home"
+        android:icon="@drawable/ic_home" />
+
+    <item
+        android:id="@+id/nav_charity"
+        android:title="Charity"
+        android:icon="@drawable/ic_charity" />
+
+    <item
+        android:id="@+id/nav_stats"
+        android:title="Stats"
+        android:icon="@drawable/ic_stats" />
+
+    <item
+        android:id="@+id/nav_give"
+        android:title="Give"
+        android:icon="@drawable/ic_gift" />
+
+</menu>
