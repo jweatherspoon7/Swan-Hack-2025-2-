@@ -84,6 +84,8 @@ public class TransactionController {
         List<Bookmark2> bookmark2s = bookmark2Repository.findAllByUser2(user);
 
         for(Bookmark2 bk: bookmark2s){
+            if(bk.getTotalContribution() == null) continue;
+
             double total = Double.parseDouble(bk.getTotalContribution());
             double percent = ( (double) bk.getPrecentContribution() ) /100;
 

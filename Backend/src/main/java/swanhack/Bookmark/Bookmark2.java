@@ -28,6 +28,9 @@ public class Bookmark2 {
         this.user2 = user2;
         this.charityName = charityName;
 
+        this.precentContribution = 0;
+        this.totalContribution = "0";
+
     }
 
     public Long getId() {
