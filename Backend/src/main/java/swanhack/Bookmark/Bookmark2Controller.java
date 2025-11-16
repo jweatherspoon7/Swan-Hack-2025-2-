@@ -74,8 +74,8 @@ public class Bookmark2Controller {
         }
 
         bookmark2.setCharityName((String) updatedBookmark.get("charityName"));
-        bookmark2.setPrecentContribution((int) updatedBookmark.get("precentContribution"));
-        bookmark2.setTotalContribution((double) updatedBookmark.get("totalContribution"));
+        bookmark2.setPrecentContribution((String) updatedBookmark.get("precentContribution"));
+        bookmark2.setTotalContribution((String) updatedBookmark.get("totalContribution"));
 
         bookmark2Repository.save(bookmark2);
 

@@ -16,6 +16,9 @@ import java.util.List;
 import swanhack.User2.User2;
 import swanhack.User2.User2Repository;
 
+import swanhack.Bookmark.Bookmark2;
+import swanhack.Bookmark.Bookmark2Repository;
+
 @RestController
 public class TransactionController {
 
@@ -24,6 +27,9 @@ public class TransactionController {
 
     @Autowired
     User2Repository user2Repository;
+
+    @Autowired
+    Bookmark2Repository bookmark2Repository;
 
     @Autowired
     private TransactionSocket transactionSocket;
@@ -53,7 +59,7 @@ public class TransactionController {
         Json example
 
         {
-            "userId": " ",
+            "userId": ,
             "transactionName": " ",
             "total": ,
             "amountDonated": ,
@@ -72,8 +78,24 @@ public class TransactionController {
             return "User: " + userId + " does not exist";
         }
 
+        double amount = (double) newTransaction.get("amountDonated");
+
+        //split total
+        List<Bookmark2> bookmark2s = bookmark2Repository.findAllByUser2(user);
+
+        for(Bookmark2 bk: bookmark2s){
+            double total = Double.parseDouble(bk.getTotalContribution());
+            double percent = ( Double.parseDouble(bk.getPrecentContribution()) ) /100;
+
+            total += amount * percent;
+
+            bk.setTotalContribution(String.valueOf(total));
+            bookmark2Repository.save(bk);
+        }
+
+        //make new object
         Transaction transaction = new Transaction( user, (String) newTransaction.get("transactionName"),
-                (double) newTransaction.get("total"), (double) newTransaction.get("amountDonated"),
+                (double) newTransaction.get("total"), amount,
                 (int) newTransaction.get("month"), (int) newTransaction.get("day"), (int) newTransaction.get("year"));
 
         transactionRepository.save(transaction);
