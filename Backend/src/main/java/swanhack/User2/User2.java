@@ -3,7 +3,7 @@ package swanhack.User2;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
-import swanhack.Bookmark.Bookmark;
+import swanhack.Bookmark.Bookmark2;
 import swanhack.Transaction.Transaction;
 
 import java.util.Set;
@@ -31,7 +31,7 @@ public class User2 {
 
     @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private Set<Bookmark> bookmarkSet;
+    private Set<Bookmark2> bookmark2Set;
 
     private String email;
 
