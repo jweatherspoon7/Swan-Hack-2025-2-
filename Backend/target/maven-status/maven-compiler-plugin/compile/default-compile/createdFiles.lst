@@ -1,9 +1,12 @@
 swanhack\Transaction\TransactionController.class
-swanhack\Main.class
-swanhack\User2\User2Controller.class
 swanhack\Transaction\TransactionRepository.class
-swanhack\User2\User2Repository.class
 swanhack\Transaction\TransactionSocket.class
 swanhack\Transaction\Transaction.class
-swanhack\WebSocketConfig.class
 swanhack\User2\User2.class
+swanhack\Main.class
+swanhack\Bookmark\Bookmark.class
+swanhack\User2\User2Controller.class
+swanhack\Bookmark\BookmarkController.class
+swanhack\User2\User2Repository.class
+swanhack\Bookmark\BookmarkRepository.class
+swanhack\WebSocketConfig.class
