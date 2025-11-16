@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.text.DateFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,6 +27,7 @@ public class Home extends AppCompatActivity {
 
     private RecyclerView transactionsRecyclerView;
     private TransactionsAdapter transactionsAdapter;
+    private TextView monthlyDonatedText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,7 @@ public class Home extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         TextView welcomeText = findViewById(R.id.home_welcome_text);
+        monthlyDonatedText = findViewById(R.id.home_monthly_donated_text);
         String username = SessionManager.getKeyUsername();
         if (username != null && !username.isEmpty()) {
             welcomeText.setText("Welcome, " + username);
@@ -59,6 +62,11 @@ public class Home extends AppCompatActivity {
                         JSONArray transactionArray = response.getJSONArray("transactionSet");
                         List<Transaction> transactions = new ArrayList<>();
 
+                        Calendar calendar = Calendar.getInstance();
+                        int currentMonth = calendar.get(Calendar.MONTH) + 1;
+                        int currentYear = calendar.get(Calendar.YEAR);
+                        double monthlyDonated = 0.0;
+
                         for (int i = 0; i < transactionArray.length(); i++) {
                             JSONObject obj = transactionArray.getJSONObject(i);
                             Transaction t = new Transaction(
@@ -70,9 +78,18 @@ public class Home extends AppCompatActivity {
                                     obj.getInt("year")
                             );
                             transactions.add(t);
+
+                             if (t.month == currentMonth && t.year == currentYear) {
+                                 monthlyDonated += t.amountDonated;
+                             }
                         }
 
                         transactionsAdapter.setTransactions(transactions);
+
+                        NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.getDefault());
+                        if (monthlyDonatedText != null) {
+                            monthlyDonatedText.setText("Change donated this month: " + currency.format(monthlyDonated));
+                        }
                     } catch (JSONException e) {
                         Log.e("Home", "Parsing transactions failed", e);
                         Toast.makeText(Home.this, "Failed to load transactions", Toast.LENGTH_SHORT).show();
@@ -112,7 +129,8 @@ public class Home extends AppCompatActivity {
 
         String getFormattedAmounts() {
             NumberFormat currency = NumberFormat.getCurrencyInstance(Locale.getDefault());
-            return "+" + currency.format(amountDonated) + "  " + currency.format(total);
+            return "Change Donated: +" + currency.format(amountDonated) +
+                    "\nTransaction Total: " + currency.format(total);
         }
     }
 
